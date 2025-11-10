@@ -83,7 +83,15 @@ export class ApiClient implements IApiClient {
 
   // Routes endpoints
   async fetchRoutes(): Promise<Route[]> {
-    return this.request<Route[]>('/routes');
+    const routes = await this.request<any[]>('/routes');
+    // Convert string numbers to actual numbers
+    return routes.map(route => ({
+      ...route,
+      ghgIntensity: parseFloat(route.ghgIntensity),
+      fuelConsumption: parseFloat(route.fuelConsumption),
+      distance: parseFloat(route.distance),
+      totalEmissions: parseFloat(route.totalEmissions)
+    }));
   }
 
   async setBaseline(routeId: string): Promise<void> {
@@ -93,7 +101,29 @@ export class ApiClient implements IApiClient {
   }
 
   async getComparison(): Promise<RouteComparisonData> {
-    return this.request<RouteComparisonData>('/routes/comparison');
+    const data = await this.request<any>('/routes/comparison');
+    
+    // API returns { baseline, comparisons: [] }
+    // We need to return the first comparison in the expected format
+    if (!data.comparisons || data.comparisons.length === 0) {
+      throw new ApiError('No comparison data available', 404);
+    }
+    
+    const firstComparison = data.comparisons[0];
+    
+    // Convert string numbers to actual numbers and return in expected format
+    return {
+      baseline: {
+        routeId: firstComparison.baseline.routeId,
+        ghgIntensity: parseFloat(firstComparison.baseline.ghgIntensity)
+      },
+      comparison: {
+        routeId: firstComparison.comparison.routeId,
+        ghgIntensity: parseFloat(firstComparison.comparison.ghgIntensity)
+      },
+      percentDiff: firstComparison.percentDiff,
+      compliant: firstComparison.compliant
+    };
   }
 
   // Compliance endpoints
@@ -105,7 +135,12 @@ export class ApiClient implements IApiClient {
       shipId,
       year: year.toString(),
     });
-    return this.request<ComplianceBalance>(`/compliance/cb?${params}`);
+    const data = await this.request<any>(`/compliance/cb?${params}`);
+    // Convert string numbers to actual numbers
+    return {
+      ...data,
+      cbGco2eq: parseFloat(data.cbGco2eq)
+    };
   }
 
   async getAdjustedComplianceBalance(
@@ -116,9 +151,12 @@ export class ApiClient implements IApiClient {
       shipId,
       year: year.toString(),
     });
-    return this.request<AdjustedComplianceBalance>(
-      `/compliance/adjusted-cb?${params}`
-    );
+    const data = await this.request<any>(`/compliance/adjusted-cb?${params}`);
+    // Convert string numbers to actual numbers
+    return {
+      ...data,
+      adjustedCbGco2eq: parseFloat(data.adjustedCbGco2eq)
+    };
   }
 
   // Banking endpoints
@@ -127,7 +165,12 @@ export class ApiClient implements IApiClient {
       shipId,
       year: year.toString(),
     });
-    return this.request<BankEntry[]>(`/banking/records?${params}`);
+    const records = await this.request<any[]>(`/banking/records?${params}`);
+    // Convert string numbers to actual numbers
+    return records.map(record => ({
+      ...record,
+      amountGco2eq: parseFloat(record.amountGco2eq)
+    }));
   }
 
   async bankSurplus(shipId: string, year: number, amount: number): Promise<void> {
@@ -146,9 +189,15 @@ export class ApiClient implements IApiClient {
 
   // Pools endpoints
   async createPool(payload: CreatePoolPayload): Promise<Pool> {
+    // Transform payload to match backend API expectations
+    const backendPayload = {
+      year: payload.year,
+      shipIds: payload.memberShipIds  // Backend expects 'shipIds', not 'memberShipIds'
+    };
+    
     return this.request<Pool>('/pools', {
       method: 'POST',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(backendPayload),
     });
   }
 }

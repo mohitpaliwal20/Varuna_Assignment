@@ -24,8 +24,8 @@ const PoolingTab: React.FC = () => {
   const apiClient = new ApiClient();
   const createPoolUseCase = new CreatePool(apiClient);
 
-  // Sample ship IDs for demo
-  const sampleShipIds = ['SHIP001', 'SHIP002', 'SHIP003', 'SHIP004', 'SHIP005'];
+  // Sample route IDs (used as ship IDs) for demo
+  const sampleShipIds = ['R001', 'R002', 'R003', 'R004', 'R005'];
 
   // Fetch adjusted compliance balances on mount and when year changes
   useEffect(() => {

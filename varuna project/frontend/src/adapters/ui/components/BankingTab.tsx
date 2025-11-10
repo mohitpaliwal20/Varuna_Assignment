@@ -15,7 +15,7 @@ const BankingTab: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   // Form states
-  const [shipId, setShipId] = useState<string>('SHIP001');
+  const [shipId, setShipId] = useState<string>('R001');
   const [year, setYear] = useState<number>(2024);
   const [bankAmount, setBankAmount] = useState<string>('');
   const [applyAmount, setApplyAmount] = useState<string>('');
@@ -146,14 +146,14 @@ const BankingTab: React.FC = () => {
       <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Ship ID
+            Route ID (Ship)
           </label>
           <input
             type="text"
             value={shipId}
             onChange={(e) => setShipId(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter ship ID"
+            placeholder="e.g., R001, R002, R003"
           />
         </div>
 
