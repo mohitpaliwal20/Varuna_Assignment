@@ -334,37 +334,55 @@
     - Handle loading and error states
     - _Requirements: 1.1, 1.2_
 
-- [ ] 16. Implement Compare Tab component
-  - [ ] 16.1 Create CompareTab component with comparison table
+- [x] 16. Implement Compare Tab component
+
+
+
+
+
+  - [x] 16.1 Create CompareTab component with comparison table
+
+
     - Display baseline vs comparison routes
     - Show ghgIntensity, percentage difference, and compliant status (✅/❌)
     - Use Target_Intensity = 89.3368 gCO₂e/MJ for compliance check
     - _Requirements: 2.1, 2.2, 2.5_
   
-  - [ ] 16.2 Add comparison chart
+  - [x] 16.2 Add comparison chart
+
     - Implement bar or line chart comparing ghgIntensity values
     - Use charting library (Recharts or Chart.js)
     - _Requirements: 2.4_
   
-  - [ ] 16.3 Wire up Compare Tab with use case
+  - [x] 16.3 Wire up Compare Tab with use case
+
     - Connect CompareRoutes use case to component
     - Handle loading and error states
     - _Requirements: 2.1_
 
-- [ ] 17. Implement Banking Tab component
-  - [ ] 17.1 Create BankingTab component with KPIs
+- [x] 17. Implement Banking Tab component
+
+
+
+
+
+  - [x] 17.1 Create BankingTab component with KPIs
+
+
     - Display current compliance balance from API
     - Show KPIs: cb_before, applied, cb_after
     - Add "Bank Positive CB" button
     - Add "Apply Banked Surplus" button
     - _Requirements: 3.1, 3.3, 3.4_
   
-  - [ ] 17.2 Implement conditional button enabling
+  - [x] 17.2 Implement conditional button enabling
+
     - Disable banking actions when CB ≤ 0
     - Display error messages from API
     - _Requirements: 3.5_
   
-  - [ ] 17.3 Wire up Banking Tab with use cases
+  - [x] 17.3 Wire up Banking Tab with use cases
+
     - Connect BankBalance use case to bank button
     - Connect ApplyBanked use case to apply button
     - Handle loading and error states
