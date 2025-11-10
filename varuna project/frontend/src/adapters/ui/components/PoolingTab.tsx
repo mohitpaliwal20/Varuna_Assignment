@@ -3,6 +3,10 @@ import { CreatePool } from '../../../core/application/useCases/CreatePool';
 import { ApiClient } from '../../infrastructure/api/ApiClient';
 import { AdjustedComplianceBalance } from '../../../core/ports/outbound';
 import { PoolMember } from '../../../core/domain';
+import Alert from './Alert';
+import LoadingSpinner from './LoadingSpinner';
+import Button from './Button';
+import Card from './Card';
 
 interface ShipMember extends AdjustedComplianceBalance {
   selected: boolean;
@@ -133,16 +137,12 @@ const PoolingTab: React.FC = () => {
 
       {/* Success Message */}
       {successMessage && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-          {successMessage}
-        </div>
+        <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} className="mb-4" />
       )}
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
+        <Alert type="error" message={error} onClose={() => setError(null)} className="mb-4" />
       )}
 
       {/* Year Selection */}
@@ -160,19 +160,14 @@ const PoolingTab: React.FC = () => {
       </div>
 
       {/* Loading State */}
-      {loading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Loading ship balances...</p>
-        </div>
-      )}
+      {loading && <LoadingSpinner message="Loading ship balances..." />}
 
       {/* Ship Member List */}
       {!loading && ships.length > 0 && (
         <>
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-4">Available Ships</h3>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto table-container">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -237,7 +232,7 @@ const PoolingTab: React.FC = () => {
           {/* Pool Sum Indicator */}
           {getSelectedShips().length > 0 && (
             <div className="mb-6">
-              <div className="bg-white p-6 rounded-lg border-2 border-gray-200">
+              <Card padding="md" className="border-2">
                 <h4 className="text-lg font-semibold mb-4">Pool Summary</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
@@ -273,13 +268,13 @@ const PoolingTab: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
             </div>
           )}
 
           {/* Pool Creation Form */}
           <div className="mb-6">
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <Card>
               <h4 className="text-lg font-semibold mb-4">Create Pool</h4>
               
               {/* Validation Messages */}
@@ -314,25 +309,24 @@ const PoolingTab: React.FC = () => {
               </div>
 
               {/* Create Pool Button */}
-              <button
+              <Button
                 onClick={handleCreatePool}
-                disabled={!isPoolValid() || loading}
-                className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
-                  isPoolValid() && !loading
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                disabled={!isPoolValid()}
+                loading={loading}
+                variant="primary"
+                size="lg"
+                fullWidth
               >
-                {loading ? 'Creating Pool...' : 'Create Pool'}
-              </button>
-            </div>
+                Create Pool
+              </Button>
+            </Card>
           </div>
 
           {/* Pool Members Result */}
           {poolMembers.length > 0 && (
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-4">Pool Created Successfully</h3>
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto table-container">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>

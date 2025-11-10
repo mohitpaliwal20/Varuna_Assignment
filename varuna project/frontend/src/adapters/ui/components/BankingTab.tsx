@@ -3,6 +3,10 @@ import { ComplianceBalance } from '../../../core/domain';
 import { BankBalance } from '../../../core/application/useCases/BankBalance';
 import { ApplyBanked } from '../../../core/application/useCases/ApplyBanked';
 import { ApiClient } from '../../infrastructure/api/ApiClient';
+import Alert from './Alert';
+import LoadingSpinner from './LoadingSpinner';
+import Button from './Button';
+import Card from './Card';
 
 const BankingTab: React.FC = () => {
   const [complianceBalance, setComplianceBalance] = useState<ComplianceBalance | null>(null);
@@ -130,16 +134,12 @@ const BankingTab: React.FC = () => {
 
       {/* Success Message */}
       {successMessage && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-          {successMessage}
-        </div>
+        <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} className="mb-4" />
       )}
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
+        <Alert type="error" message={error} onClose={() => setError(null)} className="mb-4" />
       )}
 
       {/* Ship and Year Selection */}
@@ -172,12 +172,7 @@ const BankingTab: React.FC = () => {
       </div>
 
       {/* Loading State */}
-      {loading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Loading compliance balance...</p>
-        </div>
-      )}
+      {loading && <LoadingSpinner message="Loading compliance balance..." />}
 
       {/* KPIs Section */}
       {!loading && complianceBalance && (
@@ -186,7 +181,7 @@ const BankingTab: React.FC = () => {
             <h3 className="text-xl font-semibold mb-4">Compliance Balance KPIs</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* CB Before */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <Card shadow>
                 <div className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
                   CB Before
                 </div>
@@ -205,10 +200,10 @@ const BankingTab: React.FC = () => {
                     </span>
                   )}
                 </div>
-              </div>
+              </Card>
 
               {/* Applied */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <Card shadow>
                 <div className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
                   Applied
                 </div>
@@ -216,10 +211,10 @@ const BankingTab: React.FC = () => {
                   {applied.toFixed(2)}
                 </div>
                 <div className="text-sm text-gray-500 mt-1">gCO₂e</div>
-              </div>
+              </Card>
 
               {/* CB After */}
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <Card shadow>
                 <div className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
                   CB After
                 </div>
@@ -227,14 +222,14 @@ const BankingTab: React.FC = () => {
                   {cbAfter.toFixed(2)}
                 </div>
                 <div className="text-sm text-gray-500 mt-1">gCO₂e</div>
-              </div>
+              </Card>
             </div>
           </div>
 
           {/* Banking Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Bank Positive CB */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <Card>
               <h4 className="text-lg font-semibold mb-4">Bank Positive CB</h4>
               <p className="text-sm text-gray-600 mb-4">
                 Store positive compliance balance for future use.
@@ -256,27 +251,25 @@ const BankingTab: React.FC = () => {
                 />
               </div>
 
-              <button
+              <Button
                 onClick={handleBankSurplus}
-                disabled={!canBank || loading || !bankAmount}
-                className={`w-full px-4 py-2 rounded font-medium ${
-                  canBank && !loading && bankAmount
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                disabled={!canBank || !bankAmount}
+                loading={loading}
+                variant="primary"
+                fullWidth
               >
-                {loading ? 'Processing...' : 'Bank Positive CB'}
-              </button>
+                Bank Positive CB
+              </Button>
 
               {!canBank && (
                 <p className="mt-2 text-sm text-red-600">
                   Banking is disabled when compliance balance is zero or negative.
                 </p>
               )}
-            </div>
+            </Card>
 
             {/* Apply Banked Surplus */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <Card>
               <h4 className="text-lg font-semibold mb-4">Apply Banked Surplus</h4>
               <p className="text-sm text-gray-600 mb-4">
                 Apply previously banked surplus to current deficit.
@@ -298,18 +291,16 @@ const BankingTab: React.FC = () => {
                 />
               </div>
 
-              <button
+              <Button
                 onClick={handleApplyBanked}
-                disabled={loading || !applyAmount}
-                className={`w-full px-4 py-2 rounded font-medium ${
-                  !loading && applyAmount
-                    ? 'bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                disabled={!applyAmount}
+                loading={loading}
+                variant="success"
+                fullWidth
               >
-                {loading ? 'Processing...' : 'Apply Banked Surplus'}
-              </button>
-            </div>
+                Apply Banked Surplus
+              </Button>
+            </Card>
           </div>
         </>
       )}

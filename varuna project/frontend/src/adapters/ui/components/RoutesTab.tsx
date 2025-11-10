@@ -3,6 +3,9 @@ import { Route } from '../../../core/domain';
 import { FetchRoutes } from '../../../core/application/useCases/FetchRoutes';
 import { SetBaseline } from '../../../core/application/useCases/SetBaseline';
 import { ApiClient } from '../../infrastructure/api/ApiClient';
+import Alert from './Alert';
+import LoadingSpinner from './LoadingSpinner';
+import Button from './Button';
 
 const RoutesTab: React.FC = () => {
   const [routes, setRoutes] = useState<Route[]>([]);
@@ -96,16 +99,12 @@ const RoutesTab: React.FC = () => {
 
       {/* Success Message */}
       {successMessage && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-          {successMessage}
-        </div>
+        <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} className="mb-4" />
       )}
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
+        <Alert type="error" message={error} onClose={() => setError(null)} className="mb-4" />
       )}
 
       {/* Filters */}
@@ -166,16 +165,11 @@ const RoutesTab: React.FC = () => {
       </div>
 
       {/* Loading State */}
-      {loading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Loading routes...</p>
-        </div>
-      )}
+      {loading && <LoadingSpinner message="Loading routes..." />}
 
       {/* Routes Table */}
       {!loading && filteredRoutes.length > 0 && (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto table-container">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -241,17 +235,15 @@ const RoutesTab: React.FC = () => {
                     {route.totalEmissions.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <button
+                    <Button
                       onClick={() => handleSetBaseline(route.routeId)}
-                      disabled={loading || route.isBaseline}
-                      className={`px-4 py-2 rounded font-medium ${
-                        route.isBaseline
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          : 'bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
-                      }`}
+                      disabled={route.isBaseline}
+                      loading={loading}
+                      variant={route.isBaseline ? 'outline' : 'primary'}
+                      size="sm"
                     >
                       {route.isBaseline ? 'Current Baseline' : 'Set Baseline'}
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
