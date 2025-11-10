@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS pools (
+  id SERIAL PRIMARY KEY,
+  year INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_pools_year ON pools(year);
