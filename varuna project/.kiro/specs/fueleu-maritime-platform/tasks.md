@@ -388,21 +388,31 @@
     - Handle loading and error states
     - _Requirements: 3.3, 3.4_
 
-- [ ] 18. Implement Pooling Tab component
-  - [ ] 18.1 Create PoolingTab component with member list
+- [x] 18. Implement Pooling Tab component
+
+
+
+  - [x] 18.1 Create PoolingTab component with member list
+
+
     - Display ships with adjusted compliance balance
     - Show before and after CB for each member
     - Add pool sum indicator (red if < 0, green if ≥ 0)
     - _Requirements: 4.1, 4.5_
   
-  - [ ] 18.2 Implement pool creation form
+
+
+  - [x] 18.2 Implement pool creation form
     - Add member selection interface
     - Validate sum(adjustedCB) ≥ 0
     - Disable "Create Pool" button if validation fails
     - Display validation error messages
     - _Requirements: 4.2, 4.3, 4.4, 4.5_
+
   
-  - [ ] 18.3 Wire up Pooling Tab with use case
+  - [x] 18.3 Wire up Pooling Tab with use case
+
+
     - Connect CreatePool use case to create button
     - Handle loading and error states
     - _Requirements: 4.5_
